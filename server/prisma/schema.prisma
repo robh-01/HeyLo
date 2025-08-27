@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String        @id @default(cuid())
+  username             String        @unique
+  password             String
+  chatRequestsSent     ChatRequest[] @relation("SentRequests")
+  chatRequestsReceived ChatRequest[] @relation("ReceivedRequests")
+  friends              User[]        @relation("UserFriends")
+  friendOf             User[]        @relation("UserFriends")
+  groupsCreated        Group[]
+  groupsMemberOf       Group[]       @relation("GroupMembers")
+  chatMessagesSent     ChatMessage[] @relation("from")
+  chatMessagesRecieved ChatMessage[] @relation("to")
+}
+
+model ChatRequest {
+  id         String    @id @default(cuid())
+  from       User      @relation("SentRequests", fields: [fromId], references: [id])
+  fromId     String
+  to         User      @relation("ReceivedRequests", fields: [toId], references: [id])
+  toId       String
+  status     String? // "pending", "accepted", "declined", "deleted"
+  sentAt     DateTime  @default(now())
+  acceptedAt DateTime?
+}
+
+model ChatMessage {
+  id        String          @id @default(cuid())
+  type      ChatMessageType
+  from      User            @relation("from", fields: [fromId], references: [id])
+  fromId    String
+  toUser    User?           @relation("to", fields: [toUserId], references: [id])
+  toUserId  String?
+  toGroup   Group?          @relation(fields: [toGroupId], references: [id])
+  toGroupId String?
+  sentAt    DateTime        @default(now())
+  content   String
+}
+
+model Group {
+  id        String        @id @default(cuid())
+  name      String
+  creator   User          @relation(fields: [creatorId], references: [id])
+  creatorId String
+  joinCode  String
+  members   User[]        @relation("GroupMembers")
+  messages  ChatMessage[]
+}
+
+enum ChatMessageType {
+  GROUP_MESSAGE
+  DUO_MESSAGE
+}
