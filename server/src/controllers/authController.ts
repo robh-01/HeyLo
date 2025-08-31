@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 async function signupController(req: Request, res: Response) {
-  console.log(req.body);
   const { username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = { username, password: hashedPassword };

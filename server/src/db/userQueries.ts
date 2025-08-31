@@ -19,6 +19,17 @@ async function getUserByUsername(username: string) {
   return user;
 }
 
+async function getUsersByPartialUsername(username: string) {
+  const user = await prisma.user.findMany({
+    where: {
+      username: {
+        startsWith: username.trim()
+      }
+    },
+  });
+  return user;
+}
+
 async function getUserById(userId: string) {
   const user = await prisma.user.findUnique({
     where: {
@@ -31,4 +42,4 @@ async function getUserById(userId: string) {
   return user;
 }
 
-export { createUser, getUserByUsername, getUserById };
+export { createUser, getUserByUsername, getUsersByPartialUsername, getUserById };

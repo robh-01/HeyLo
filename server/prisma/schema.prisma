@@ -28,7 +28,7 @@ model ChatRequest {
   fromId     String
   to         User      @relation("ReceivedRequests", fields: [toId], references: [id])
   toId       String
-  status     String? // "pending", "accepted", "declined", "deleted"
+  status     String?   @default("pending") // "pending", "accepted", "declined", "deleted"
   sentAt     DateTime  @default(now())
   acceptedAt DateTime?
 }
