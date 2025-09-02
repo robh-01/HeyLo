@@ -4,10 +4,6 @@ const userRouter = Router();
 import { getUsersByPartialUsernameHandler } from "../controllers/userController.js";
 import { authenticateJWT } from "../middleware/authMiddlware.js";
 
-userRouter.get(
-  "/partial-username",
-  authenticateJWT,
-  getUsersByPartialUsernameHandler
-);
+userRouter.get("/search", authenticateJWT, getUsersByPartialUsernameHandler);
 
 export { userRouter };

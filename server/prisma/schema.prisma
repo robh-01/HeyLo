@@ -57,6 +57,6 @@ model Group {
 }
 
 enum ChatMessageType {
-  GROUP_MESSAGE
-  DUO_MESSAGE
+  DIRECT
+  GROUP
 }
