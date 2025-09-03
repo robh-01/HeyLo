@@ -78,4 +78,25 @@ async function joinGroup(
   return group;
 }
 
-export { createGroup, joinGroup };
+async function searchGroup(groupName: string) {
+  const groups = await prisma.group.findMany({
+    where: {
+      name: {
+        startsWith: groupName.trim(),
+      },
+    },
+  });
+  return groups;
+}
+
+async function getJoinedGroups(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      groupsMemberOf: true,
+    },
+  });
+  return user?.groupsMemberOf || [];
+}
+
+export { createGroup, joinGroup, searchGroup, getJoinedGroups };

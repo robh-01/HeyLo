@@ -76,4 +76,69 @@ async function sendMessage(
     return message;
   }
 }
-export { sendMessage };
+
+async function getMessages(userId: string, chatWith: string) {
+  // chatWith can be either userId for direct messages or groupId for group messages
+  // first check if chatWith is a user
+  const user = await prisma.user.findUnique({
+    where: { id: chatWith },
+  });
+  if (user) {
+    // get direct messages between the two users
+    const messages = await prisma.chatMessage.findMany({
+      where: {
+        OR: [
+          {
+            fromId: userId,
+            toUserId: chatWith,
+            type: "DIRECT",
+          },
+          {
+            fromId: chatWith,
+            toUserId: userId,
+            type: "DIRECT",
+          },
+        ],
+      },
+      orderBy: {
+        sentAt: "asc",
+      },
+    });
+    return messages;
+  }
+  // if not a user, check if chatWith is a group
+  const group = await prisma.group.findUnique({
+    where: { id: chatWith },
+  });
+  if (group) {
+    // check if user is a member of the group
+    const isMember = await prisma.group.findFirst({
+      where: {
+        id: chatWith,
+        members: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    });
+    if (!isMember) {
+      throw new Error(
+        "You can only view messages of groups you are a member of"
+      );
+    }
+    // get group messages
+    const messages = await prisma.chatMessage.findMany({
+      where: {
+        toGroupId: chatWith,
+        type: "GROUP",
+      },
+      orderBy: {
+        sentAt: "asc",
+      },
+    });
+    return messages;
+  }
+  throw new Error("Chat not found");
+}
+export { sendMessage, getMessages };

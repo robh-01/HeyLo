@@ -23,8 +23,8 @@ async function getUsersByPartialUsername(username: string) {
   const user = await prisma.user.findMany({
     where: {
       username: {
-        startsWith: username.trim()
-      }
+        startsWith: username.trim(),
+      },
     },
   });
   return user;
@@ -42,4 +42,20 @@ async function getUserById(userId: string) {
   return user;
 }
 
-export { createUser, getUserByUsername, getUsersByPartialUsername, getUserById };
+async function getFriends(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      friends: true,
+    },
+  });
+  return user?.friends || [];
+}
+
+export {
+  createUser,
+  getUserByUsername,
+  getUsersByPartialUsername,
+  getUserById,
+  getFriends,
+};

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sendMessage } from "../db/messageQueries.js";
+import { sendMessage, getMessages } from "../db/messageQueries.js";
 
 async function sendMessageHandler(req: Request, res: Response) {
   const { messageType, toId, content } = req.body;
@@ -45,4 +45,37 @@ async function sendMessageHandler(req: Request, res: Response) {
   }
 }
 
-export { sendMessageHandler };
+//chatId can be either userId for direct messages or groupId for group messages
+async function getMessagesHandler(req: Request, res: Response) {
+  const userId = (req.user as { id: string }).id;
+  const { chatWith } = req.body;
+  if (!userId) {
+    return res.status(401).json({
+      status: "failure",
+      message: "Unauthorized. User ID not found in token.",
+    });
+  }
+
+  if (!chatWith) {
+    return res.status(400).json({
+      status: "failure",
+      message: "chatId is required.",
+    });
+  }
+
+  try {
+    const messages = await getMessages(userId, chatWith);
+    res.status(200).json({
+      status: "success",
+      data: messages,
+    });
+  } catch (err) {
+    console.error("Error retrieving messages:", err);
+    res.status(400).json({
+      status: "error",
+      message: `Failed to retrieve messages. ${err instanceof Error ? err.message : "Please try again later."}`,
+    });
+  }
+}
+
+export { sendMessageHandler, getMessagesHandler };
