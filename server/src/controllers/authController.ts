@@ -78,4 +78,15 @@ async function loginController(req: Request, res: Response) {
   }
 }
 
-export { signupController, loginController };
+// for validation token, we have "authenticateJwt" middleware(in middleware/authMiddleware)
+// to check if token is validation
+// which calls this controller if token is valid
+// and returns 401 states code if token is invalid
+async function tokenValidationController(_req: Request, res: Response) {
+  res.status(200).json({
+    status: "success",
+    message: "Token validation successful",
+  });
+}
+
+export { signupController, loginController, tokenValidationController };
