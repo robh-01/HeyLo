@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.tsx";
 import SignupForm from "@/components/app/SignupForm.tsx";
 import LoginForm from "@/components/app/LoginForm.tsx";
+import GlobalMessageContainer from "@/components/app/GlobalMessageContainer.tsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [],
+    children: [{ index: true, element: <GlobalMessageContainer /> }],
   },
   { path: "/login", element: <LoginForm /> },
   { path: "/signup", element: <SignupForm /> },

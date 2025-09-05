@@ -1,10 +1,17 @@
-import { useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 
 import { apiFetch } from "@/utils/apiFetch";
 
+export const SocketContext = createContext<ReturnType<typeof io> | null>(null);
+
 function App() {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [socket, setSocket] = useState<ReturnType<typeof io> | null>(null);
+
+  // Socket.io setup
   // Auth check on mount
   useEffect(() => {
     async function verifyAuth() {
@@ -15,7 +22,10 @@ function App() {
       }
       try {
         const response = await apiFetch(
-          `${import.meta.env.VITE_BACKEND_URL}/auth/validate-token`
+          `${import.meta.env.VITE_BACKEND_URL}/auth/validate-token`,
+          {
+            method: "POST",
+          }
         );
         if (!response.ok) {
           navigate("/login", { replace: true });
@@ -28,14 +38,27 @@ function App() {
       } catch {
         navigate("/login", { replace: true });
       }
+      setIsAuthenticated(true);
+      const newSocket = io(import.meta.env.VITE_WS_SERVER_URL as string, {
+        auth: {
+          token,
+        },
+      });
+      setSocket(newSocket);
     }
     verifyAuth();
   }, [navigate]);
 
   return (
     <>
-      main app chat interface will be here
-      <Outlet></Outlet>
+      {isAuthenticated && (
+        <>
+          <h1>Heylo</h1>
+          <SocketContext.Provider value={socket}>
+            <Outlet></Outlet>
+          </SocketContext.Provider>
+        </>
+      )}
     </>
   );
 }
