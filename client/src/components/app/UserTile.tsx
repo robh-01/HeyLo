@@ -1,8 +1,10 @@
 import { UserRoundPlus } from "lucide-react";
 
 export default function UserSearchTile({
+  type,
   user,
 }: {
+  type: "searchTile" | "normalTile";
   user: { id: string; username: string };
 }) {
   async function handleRequest() {
@@ -39,7 +41,7 @@ export default function UserSearchTile({
           onClick={handleRequest}
           className="p-2 rounded-full hover:bg-gray-200"
         >
-          <UserRoundPlus />
+          {type === "searchTile" ? <UserRoundPlus /> : <></>}
         </button>
       </div>
     </div>

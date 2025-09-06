@@ -8,6 +8,6 @@ import {
 import { authenticateJWT } from "../middleware/authMiddlware.js";
 
 messageRouter.post("", authenticateJWT, sendMessageHandler);
-messageRouter.get("", authenticateJWT, getMessagesHandler);
+messageRouter.get("/:chatWith", authenticateJWT, getMessagesHandler);
 
 export { messageRouter };

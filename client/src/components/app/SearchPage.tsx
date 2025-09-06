@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { searchUsers } from "@/utils/searchFunctions";
-import UserSearchTile from "./UserSearchTile";
+import UserSearchTile from "./UserTile";
 
 type SearchType = "user" | "group";
 
@@ -60,6 +60,7 @@ export default function SearchPage() {
               <li key={index}>
                 {queryType === "user" ? (
                   <UserSearchTile
+                    type="searchTile"
                     user={result as { id: string; username: string }}
                   />
                 ) : (

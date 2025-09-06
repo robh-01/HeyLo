@@ -104,7 +104,7 @@ async function getMessages(userId: string, chatWith: string) {
         sentAt: "asc",
       },
     });
-    return messages;
+    return { username: user.username, messages };
   }
   // if not a user, check if chatWith is a group
   const group = await prisma.group.findUnique({
@@ -137,7 +137,7 @@ async function getMessages(userId: string, chatWith: string) {
         sentAt: "asc",
       },
     });
-    return messages;
+    return { groupName: group.name, messages };
   }
   throw new Error("Chat not found");
 }

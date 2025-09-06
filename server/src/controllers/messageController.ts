@@ -48,7 +48,7 @@ async function sendMessageHandler(req: Request, res: Response) {
 //chatId can be either userId for direct messages or groupId for group messages
 async function getMessagesHandler(req: Request, res: Response) {
   const userId = (req.user as { id: string }).id;
-  const { chatWith } = req.body;
+  const { chatWith } = req.params; // chatWith can be either userId or groupId
   if (!userId) {
     return res.status(401).json({
       status: "failure",

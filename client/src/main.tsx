@@ -19,7 +19,7 @@ const router = createBrowserRouter([
       { index: true, element: <GlobalMessageContainer /> },
       { path: "direct", element: <DirectMessagePage /> },
       { path: "group", element: <DirectMessagePage /> },
-      { path: "/search", element: <SearchPage /> },
+      { path: "search", element: <SearchPage /> },
     ],
   },
   { path: "/login", element: <LoginForm /> },
