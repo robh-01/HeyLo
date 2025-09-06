@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getUsersByPartialUsername, getFriends } from "../db/userQueries.js";
 
 async function getUsersByPartialUsernameHandler(req: Request, res: Response) {
-  const { username } = req.body;
+  const { username } = req.params;
   try {
     const users = await getUsersByPartialUsername(username);
     res.status(200).json({

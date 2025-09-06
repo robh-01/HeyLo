@@ -2,6 +2,8 @@ import { useState, useEffect, createContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
+import Sidebar from "@/components/app/Sidebar";
+
 import { apiFetch } from "@/utils/apiFetch";
 
 export const SocketContext = createContext<ReturnType<typeof io> | null>(null);
@@ -52,12 +54,12 @@ function App() {
   return (
     <>
       {isAuthenticated && (
-        <>
-          <h1>Heylo</h1>
+        <div className="app-container flex h-screen ">
+          <Sidebar />
           <SocketContext.Provider value={socket}>
             <Outlet></Outlet>
           </SocketContext.Provider>
-        </>
+        </div>
       )}
     </>
   );

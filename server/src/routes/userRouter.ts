@@ -7,7 +7,11 @@ import {
 } from "../controllers/userController.js";
 import { authenticateJWT } from "../middleware/authMiddlware.js";
 
-userRouter.get("/search", authenticateJWT, getUsersByPartialUsernameHandler);
+userRouter.get(
+  "/search/:username",
+  authenticateJWT,
+  getUsersByPartialUsernameHandler
+);
 userRouter.get("/friends", authenticateJWT, getFriendsHandler);
 
 export { userRouter };
